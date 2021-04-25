@@ -1,0 +1,36 @@
+Nod* sortare_lsi(Nod* lista){
+	Nod* par_i;
+	Nod* par_j;
+
+    // for(i=0; i<list_size-1; i++){       //merge si asta
+    //     for(j=i+1; j<list_size; j++){
+    //         parcurgere_i = getListItem(lista, i);
+    //         parcurgere_j = getListItem(lista, j);
+
+    //         if(parcurgere_i->val > parcurgere_j->val)
+    //             swapItemsByIndex(lista, i, j);
+    //     }
+    // }
+
+    for(par_i = lista; par_i != NULL && par_i->next != NULL; par_i = par_i->next){
+        for(par_j = par_i->next; par_j != NULL; par_j = par_j->next){
+            if(par_i->val > par_j->val){
+                Nod* p = par_i->next;
+                Nod* q = par_j->next;
+                Nod* temp = (Nod*) malloc(sizeof(Nod));
+
+                *temp = *par_i;
+
+                *par_i = *par_j;
+                par_i->next = p;
+
+                *par_j = *temp;
+                par_j->next = q;
+
+                free(temp);
+            }
+        }
+    }
+
+	return lista;
+}
