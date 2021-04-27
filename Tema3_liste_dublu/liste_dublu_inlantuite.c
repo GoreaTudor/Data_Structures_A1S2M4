@@ -47,7 +47,7 @@ LDI* newList(){
 
 
 
-//Displays list from FIRST to LAST element
+//Displays list from FIRST to LAST node
 void display(LDI* list){
     if(list){
         printf("\nThe list has %d elements", list->size);
@@ -58,14 +58,14 @@ void display(LDI* list){
             Nod* p;
 
             for(p = list->head; p != NULL; p = p->next)
-                printf("\nindex %d (0x%.6x):  0x%.6x  %d  0x%.6x", i++, p, p->pred, p->val, p->next);
+                printf("\nindex %d: %d", i++, p->val);
         }
 
         printf("\n");
     }
 }
 
-//Displays list from LAST to FIRST element
+//Displays list from LAST to FIRST node
 void display_r(LDI* list){
     if(list){
         printf("\nThe list has %d elements", list->size);
@@ -76,7 +76,7 @@ void display_r(LDI* list){
             Nod *p;
 
             for(p = list->last; p != NULL; p = p->pred)
-                printf("\nindex %d (0x%.6x):  0x%.6x  %d  0x%.6x", i--, p, p->pred, p->val, p->next);
+                printf("\nindex %d: %d ", i--, p->val);
         }
 
         printf("\n");
@@ -85,7 +85,7 @@ void display_r(LDI* list){
 
 
 
-//Returns an element on a specific index
+//Returns a node on a specific index
 Nod* getListItem(LDI* list, int index){
     Nod* p;
     if(list){
@@ -108,7 +108,7 @@ Nod* getListItem(LDI* list, int index){
     return NULL; //there is no list
 }
 
-//Changes the value of an element on a specific index
+//Changes the value of a node on a specific index
 void setListElement(LDI* list, int index, int val){
     Nod* p;
     if(list){
@@ -134,7 +134,7 @@ void setListElement(LDI* list, int index, int val){
 
 
 
-//Insert element at the begining of the list
+//Insert node at the begining of the list
 LDI* insert_begin(LDI* list, int val){
     Nod* p;
     if(list){
@@ -161,7 +161,7 @@ LDI* insert_begin(LDI* list, int val){
     return NULL;
 }
 
-//Insert element at the end of the list
+//Insert node at the end of the list
 LDI* insert_end(LDI* list, int val){
     Nod *p;
     if(list){
@@ -188,9 +188,49 @@ LDI* insert_end(LDI* list, int val){
     return NULL;
 }
 
+//Insert a node on a specific index
+LDI* insert_node(LDI* list, int index, int val){
+    Nod *p, *q;
+    if(list){
+        if(index >=0 && index <= list->size){
+            if(list->head){
+                if(index == 0){
+                    return insert_begin(list, val);
+                }
+
+                if(index == list->size){
+                    return insert_end(list, val);
+                }
+
+                p = getListItem(list, index -1);
+                q = newNod(val);
+
+                q->next = p->next; 
+                q->pred = p;
+
+                q->next->pred = q;
+                p->next = q;
+
+                list->size ++;
+                return list;
+            }
+
+            p = newNod(val);
+            list->head = p;
+            list->last = p;
+
+            list->size = 1;
+            return list;
+        }
+
+        return list; //invalid index
+    }
+
+    return NULL;
+}
 
 
-//Deletes the FIRST element
+//Delete the FIRST node
 LDI* delete_first(LDI* list){
     Nod* p;
 
@@ -222,7 +262,7 @@ LDI* delete_first(LDI* list){
     return NULL; //there is no list
 }
 
-//Deletes the LAST element
+//Delete the LAST node
 LDI* delete_last(LDI* list){
     Nod* p;
 
@@ -255,6 +295,65 @@ LDI* delete_last(LDI* list){
     return NULL; //there is no list
 }
 
+//Delete a node on a specific index
+LDI* delete_node(LDI* list, int index){
+    Nod* p;
+    if(list){
+        if(list->head){
+            if(index >=0 && index < list->size){
+                if(index == 0){
+                    return delete_first(list);
+                }
+
+                if(index == list->size -1){
+                    return delete_last(list);
+                }
+
+                p = getListItem(list, index);
+
+                p->pred->next = p->next;
+                p->next->pred = p->pred;
+
+                free(p);
+
+                list->size --;
+                return list;
+            }
+
+            return list; //invalid index
+        }
+
+        return list; //empty list
+    }
+
+    return NULL; //there is no list
+}
+
+//Delete all the nodes of a list
+LDI* delete_all(LDI* list){
+    Nod* p;
+    if(list){
+        if(list->head){
+            while(list->head){
+                p = list->head;
+                list->head = list->head->next;
+
+                free(p);
+            }
+
+            list->head = NULL;
+            list->last = NULL;
+            list->size = 0;
+
+            return list;
+        }
+
+        return list; //list empty -no need to delete
+    }
+
+    return NULL; //there is no list
+}
+
 
 
 ///// ADVANCED OPERATIONS /////
@@ -262,8 +361,143 @@ LDI* delete_last(LDI* list){
 
 
 int main(){
+    int pos, val, opt, ok=1;
     LDI* list1 = newList();
-    
+
+    while(ok == 1){
+        printf("\n1 - Display list");
+        printf("\n2 - Insert new element");
+        printf("\n3 - Delete an element");
+        printf("\n4 - Delete all elements");
+        printf("\n5 - Get an element");
+        printf("\n6 - Set an element");
+        //printf("\n7 - Swap two elemnts");
+        //printf("\n8 - Sort list");
+        printf("\n0 - EXIT");
+
+        printf("\n\nYour option: ");
+        scanf("%d", &opt);
+        printf("\n");
+
+        switch(opt){
+            case 1:{ //Display
+                display(list1);
+                display_r(list1);
+            }break;
+
+
+            case 2:{ //Insert
+                printf("Index: ");
+                scanf("%d", &pos);
+
+                printf("Value: ");
+                scanf("%d", &val);
+
+                if(pos < 0 || pos > list1->size){
+                    printf("Invalid index!");
+
+                }else{
+                    list1 = insert_node(list1, pos, val);
+                }
+            }break;
+
+
+            case 3:{ //Delete
+                printf("Index: ");
+                scanf("%d", &pos);
+
+                if(pos < 0 || pos >= list1->size){
+                    printf("Invalid index!");
+
+                }else{
+                    list1 = delete_node(list1, pos);
+                }
+            }break;
+
+
+            case 4:{ //Delete All
+                printf("Are you sure? This action can not be undone. (1 for yes)");
+                printf("\nYour option: ");
+                scanf("%d", &val);
+                
+                if(val == 1){
+                    list1 = delete_all(list1);
+                    printf("List Deleted.");
+                }else{
+                    printf("The list was not deleted.");
+                }
+            }break;
+
+
+            case 5:{ //GET
+                printf("Index: ");
+                scanf("%d", &pos);
+
+                if(pos < 0 || pos >= list1->size){
+                    printf("Invalid index!");
+
+                }else{
+                    Nod* p = getListItem(list1, pos);
+                    printf("The element on index %d is: %d", pos, p->val);
+                }
+            }break;
+
+
+            case 6:{ //SET
+                printf("Index: ");
+                scanf("%d", &pos);
+
+                printf("Value: ");
+                scanf("%d", &val);
+
+                if(pos < 0 || pos >= list1->size){
+                    printf("Invalid index!");
+
+                }else{
+                    printf("Set element.");
+                    setListElement(list1, pos, val);
+                }
+            }break;
+
+
+            case 7:{ //Swap
+                printf("Index 1: ");
+                scanf("%d", &pos);
+
+                printf("Index 2: ");
+                scanf("%d", &val);
+
+                if(pos < 0 || pos >= list1->size){
+                    printf("Invalid index 1!");
+
+                }else if(val < 0 || val >= list1->size){
+                    printf("Invalid index 2!");
+
+                }else{
+                    printf("Swapped elements.");
+                    //swapItemsByIndex(list1, pos, val);
+                }
+            }break;
+
+
+            case 8:{ //Sort
+                // list1 = sort_list(list1);
+                printf("Sorted.");
+            }break;
+
+            
+            case 0:{ //EXIT
+                printf("Bye!");
+                ok = 0;
+            }break;
+
+
+            default:
+                printf("\nNot a valid option!");
+        }
+
+        printf("\n\n");
+    }
 
     return 0;
 }
