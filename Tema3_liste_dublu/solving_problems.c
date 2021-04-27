@@ -77,6 +77,28 @@ void display_r(LDI* list){
 }
 
 
+Nod* getListItem(LDI* list, int index){
+    Nod* p;
+    if(list){
+        if(list->head){
+            if(index >= 0 && index < list->size){
+                p = list->head;
+
+                for(int i=0; i < index && p != NULL; i++)
+                    p = p->next;
+                
+                return p;
+            }
+
+            return NULL; //invalid index
+        }
+
+        return NULL; //list empty
+    }
+
+    return NULL; //there is no list
+}
+
 LDI* insert_last(LDI* list, int val){
     Nod *p;
     if(list){
@@ -104,9 +126,67 @@ LDI* insert_last(LDI* list, int val){
 }
 
 
+//Insert element at the begining of the list
+LDI* insert_begin(LDI* list, int val){
+    Nod* p;
+    if(list){
+        if(list->head){
+            p = newNod(val);
+
+            p->next = list->head;
+            list->head->pred = p;
+
+            list->head = p;
+
+            list->size ++;
+            return list;
+        }
+
+        p = newNod(val);
+        list->head = p;
+        list->last = p;
+
+        list->size = 1;
+        return list;
+    }
+
+    return NULL;
+}
+
+//Insert element at the end of the list
+LDI* insert_end(LDI* list, int val){
+    Nod *p;
+    if(list){
+        if(list->last){
+            p = newNod(val);
+
+            list->last->next = p;
+            p->pred = list->last;
+
+            list->last = p;
+
+            list->size ++;
+            return list;
+        }
+
+        p = newNod(val);
+        list->head = p;
+        list->last = p;
+        list->size = 1;
+
+        return list;
+    }
+
+    return NULL;
+}
+
+
+
+
 ////////
 
 ////////
+
 
 
 int main(){
@@ -116,13 +196,13 @@ int main(){
         list1 = insert_last(list1, i);
 
     display(list1);
-    //display_r(list1);
+    display_r(list1);
 
-    setListElement(list1, 4, 7);
+    list1 = delete_all(list1);
     
     printf("\n\n");
     display(list1);
-    //display_r(list1);
+    display_r(list1);
 
     return 0;
 }
