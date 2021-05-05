@@ -395,6 +395,32 @@ LDI* swapItemsByIndex(LDI* list, int idx1, int idx2){
     return NULL; //there is no list
 }
 
+LDI* sortList(LDI* list){
+    Nod *p, *q;
+    int i, j;
+
+    if(list){
+        if(list->head){
+            for(i=0; i < list->size; i++){
+                p = getListItem(list, i);
+
+                for(j=i+1; j < list->size; j++){
+                    q = getListItem(list, j);
+
+                    if(p->val > q->val)
+                        swapItemsByIndex(list, i, j);
+                }
+            }
+
+            return list;
+        }
+
+        return list; //empty list
+    }
+
+    return NULL; //there is no list
+}
+
 
 
 int main(){
@@ -408,8 +434,8 @@ int main(){
         printf("\n4 - Delete all elements");
         printf("\n5 - Get an element");
         printf("\n6 - Set an element");
-        //printf("\n7 - Swap two elemnts");
-        //printf("\n8 - Sort list");
+        printf("\n7 - Swap two elemnts");
+        printf("\n8 - Sort list");
         printf("\n0 - EXIT");
 
         printf("\n\nYour option: ");
@@ -512,13 +538,13 @@ int main(){
 
                 }else{
                     printf("Swapped elements.");
-                    //swapItemsByIndex(list1, pos, val);
+                    swapItemsByIndex(list1, pos, val);
                 }
             }break;
 
 
             case 8:{ //Sort
-                // list1 = sort_list(list1);
+                list1 = sortList(list1);
                 printf("Sorted.");
             }break;
 
