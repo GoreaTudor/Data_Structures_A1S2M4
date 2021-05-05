@@ -125,10 +125,6 @@ LDI* insert_last(LDI* list, int val){
     return NULL;
 }
 
-
-
-
-////////
 LDI* swapItemsByIndex(LDI* list, int idx1, int idx2){
     if(list){
         if(list->head){
@@ -164,6 +160,35 @@ LDI* swapItemsByIndex(LDI* list, int idx1, int idx2){
 
     return NULL; //there is no list
 }
+
+
+
+////////
+LDI* sortList(LDI* list){
+    Nod *p, *q;
+    int i, j;
+
+    if(list){
+        if(list->head){
+            for(i=0; i < list->size; i++){
+                p = getListItem(list, i);
+
+                for(j=i+1; j < list->size; j++){
+                    q = getListItem(list, j);
+
+                    if(p->val > q->val)
+                        swapItemsByIndex(list, i, j);
+                }
+            }
+
+            return list;
+        }
+
+        return list; //empty list
+    }
+
+    return NULL; //there is no list
+}
 ////////
 
 
@@ -172,12 +197,12 @@ int main(){
     LDI* list1 = newList();
 
     for(int i=1; i<=5; i++)
-        list1 = insert_last(list1, i);
+        list1 = insert_last(list1, 20-i);
 
     display(list1);
     display_r(list1);
 
-    list1 = swapItemsByIndex(list1, 1, 2);
+    list1 = sortList(list1);
     
     printf("\n\n");
     display(list1);
