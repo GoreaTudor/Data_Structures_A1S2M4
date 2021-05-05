@@ -358,6 +358,43 @@ LDI* delete_all(LDI* list){
 
 ///// ADVANCED OPERATIONS /////
 
+//Swaps two nodes by their index
+LDI* swapItemsByIndex(LDI* list, int idx1, int idx2){
+    if(list){
+        if(list->head){
+            if((idx1 >= 0 && idx1 < list->size) && (idx2 >= 0 && idx2 < list->size)){
+                Nod* p = getListItem(list, idx1);
+                Nod* p1 = p->pred;
+                Nod* p2 = p->next;
+
+                Nod* q = getListItem(list, idx2);
+                Nod* q1 = q->pred;
+                Nod* q2 = q->next;
+
+                Nod* temp = newNod(0);
+                *temp = *p;
+
+                *p = *q;
+                p->pred = p1;
+                p->next = p2;
+
+                *q = *temp;
+                q->pred = q1;
+                q->next = q2;
+
+                free(temp);
+                return list;
+            }
+
+            return list; //invalid idx1 or idx2
+        }
+
+        return list; //list empty
+    }
+
+    return NULL; //there is no list
+}
+
 
 
 int main(){
