@@ -136,62 +136,112 @@ int POP(DynamicStack* stack){
 }
 
 // Delete the entire stack
-void deleteStack(DynamicStack* stack){
-    ;
+int deleteStack(DynamicStack* stack){
+    if(stack){
+        if(stack->firstNode){
+            Node* p;
+
+            while(stack->firstNode){
+                p = stack->firstNode;
+                stack->firstNode = stack->firstNode->next;
+
+                // if(stack->firstNode) //Not necessary bc I delete all the nodes
+                //     stack->firstNode->prev = NULL;
+
+                free(p);
+            }
+            
+            stack->numberOfElements = 0;
+            return 1; //Deletion success
+        }
+
+        return 0; //Deletion failed
+    }
+
+    return 0; //Deletion failed
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
+
 int main(){
-    int ok=1, opt;
+    DynamicStack* st = newStack();
+    int ok=1, opt, n, e;
 
     while(ok){
         printf("\n1 - Show stack");
         printf("\n2 - Show stack - reverse");
         printf("\n3 - PUSH");
         printf("\n4 - POP");
-        printf("\n5 - Delete all");
-        printf("\n6 - EMPTYSTACK");
+        printf("\n5 - EMPTYSTACK");
+        printf("\n6 - Delete all");  
         printf("\n0 - EXIT");
 
         printf("\n\nOption: ");
         scanf("%d", &opt);
 
+        printf("\n");
+
         switch(opt){
             case 1: { //show
-                ;
+                show(st);
             } break;
 
 
             case 2: { //show reverse
-                ;
+                show_r(st);
             } break;
 
 
             case 3: { //push
-                ;
+                printf("Enter value: ");
+                scanf("%d", &n);
+
+                e = PUSH(st, n);
+
+                if(e)
+                    printf("Push Success!");
+                else
+                    printf("Push failed!");
             } break;
 
 
             case 4: { //pop
-                ;
+                e = POP(st);
+
+                if(e)
+                    printf("Pop Success!");
+                else
+                    printf("Pop failed!");
             } break;
 
 
-            case 5: { //delete all
-                ;
+            case 5: { //empty stack
+                e = EMPTYSTACK(st);
+
+                if(e)
+                    printf("Stack empty!");
+                else
+                    printf("Stack not empty!");
             } break;
 
 
-            case 6: { //empty stack
-                ;
+            case 6: { //delete all
+                e = deleteStack(st);
+
+                if(e)
+                    printf("Deletion success!");
+                else
+                    printf("Deletion failed!");
             } break;
 
 
-            case 0: {
-                printf("Bye."); ok = 0;
+            case 0: { //EXIT
+                printf("Bye."); 
+                ok = 0;
             }break;
+
 
             default: printf("\nInvalid option!");
         }
