@@ -239,7 +239,7 @@ int main(){
     while(ok){
         printf("\n1 - Display");
         printf("\n2 - Insert");
-        printf("\n3 - Delete node - NOT WORKING PROPERLY");
+        printf("\n3 - Delete node");
         printf("\n4 - Delete tree");
         printf("\n5 - Height");
         printf("\n6 - Search"); 
