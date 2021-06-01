@@ -38,24 +38,24 @@ Node newNode(int key, int value){
 
 
 //Destroy function using recursivity
-void abcDelete(Node root){
+void DeleteTree(Node root){
     if(root){
-        abcDelete(root->left);
-        abcDelete(root->right);
+        DeleteTree(root->left);
+        DeleteTree(root->right);
         free(root);
     }
 }
 
 //Destroy the tree
-void destroyTree(BinaryTree abc){
-    abcDelete(abc->root);
+void abcDeleteTree(BinaryTree abc){
+    DeleteTree(abc->root);
     abc->root = NULL;
     abc->nrOfElements = 0;
 }
 
 
 //Insert a note into the tree
-int insert(BinaryTree abc, int key, int value){
+int abcInsert(BinaryTree abc, int key, int value){
     if(abc){
         if(abc->root == NULL){ //the tree is empty
             abc->root = newNode(key, value);
@@ -102,19 +102,84 @@ int insert(BinaryTree abc, int key, int value){
 
 
 //Searches a node inside a tree
-Node search(Node p, int key){
+Node abcSearch(Node p, int key){
     if(p){
         if(key == p->key)
             return p; //the node is found
 
         if(key < p->key)
-            return search(p->left, key); //the node is in left subtree
+            return abcSearch(p->left, key); //the node is in left subtree
 
         if(key > p->key)
-            return search(p->right, key); //the node is in the right subtree
+            return abcSearch(p->right, key); //the node is in the right subtree
     }
 
     return NULL; //the node was not found
+}
+
+
+//Deletes a node using  recursivity
+Node DeleteNode(Node p, int key){
+    if(p){
+        if(key < p->key){
+            p->left = DeleteNode(p->left, key);
+
+        } else if(key > p->key){
+            p->right = DeleteNode(p->right, key);
+
+        } else { //key == p->key
+
+            if(!p->left && !p->right){ //has no child
+                free(p);
+                return NULL;
+
+            } else if(!p->left){ //has right child only
+                Node temp = p->right;
+                free(p);
+                return temp;
+
+            } else if(!p->right){ //has left child only
+                Node temp = p->left;
+                free(p);
+                return temp;
+
+            } else { //has two children
+                Node temp = p->right;
+
+                while(temp && temp->left) //minimum node in the right subtree of p
+                    temp = temp->left;
+
+                p->key = temp->key;
+                p->value = temp->value;
+            
+                p->right = DeleteNode(p->right, temp->key);
+            } 
+        }
+
+        return p;
+    }
+
+    return NULL;
+}
+
+//Deletes a node of the tree
+int abcDeleteNode(BinaryTree abc, int key){
+    if(abc){
+        if(abc->root){
+            if(abcSearch(abc->root, key)){
+                abc->root = DeleteNode(abc->root, key);
+                abc->nrOfElements --;
+
+                return 1;
+            }
+
+            return 0; //node not found
+        }
+
+        return 0; //the tree is empty
+    }
+
+    return 0; //there is no tree
 }
 
 
@@ -146,6 +211,21 @@ void abcPostorder(Node p){
 }
 
 
+//returns the height of the tree
+int abcHeight(Node p){
+    if(p == NULL)
+        return -1;
+
+    int l = abcHeight(p->left);
+    int r = abcHeight(p->right);
+
+    if(l > r)
+        return l + 1;
+    else
+        return r + 1;
+}
+
+
 
 ////////////////////////////////////////////////////////
 
@@ -159,9 +239,10 @@ int main(){
     while(ok){
         printf("\n1 - Display");
         printf("\n2 - Insert");
-        printf("\n3 - Delete");
-        printf("\n4 - Destroy tree");
-        printf("\n5 - Search");
+        printf("\n3 - Delete node - NOT WORKING PROPERLY");
+        printf("\n4 - Delete tree");
+        printf("\n5 - Height");
+        printf("\n6 - Search"); 
         printf("\n0 - Exit");
 
         printf("\n\nOption: ");
@@ -194,7 +275,7 @@ int main(){
                 printf("Value: ");
                 scanf("%d", &n);
 
-                e = insert(abc, k, n);
+                e = abcInsert(abc, k, n);
 
                 if(e)
                     printf("Inserted.");
@@ -203,22 +284,36 @@ int main(){
             }break;
 
 
-            case 3:{ //delete - NYI
-                printf("Not yet implemented");
-            }break;
-
-
-            case 4:{ //destroy tree
-                destroyTree(abc);
-                printf("Destroyed.");
-            }break;
-
-
-            case 5:{ //search
+            case 3:{ //delete node
                 printf("Key: ");
                 scanf("%d", &k);
 
-                p = search(abc->root, k);
+                e = abcDeleteNode(abc, k);
+                
+                if(e)
+                    printf("Node Deleted.");
+                else
+                    printf("Error: node not found!");
+            }break;
+
+
+            case 4:{ //delete tree
+                abcDeleteTree(abc);
+                printf("Tree Deleted.");
+            }break;
+
+
+            case 5:{ //height
+                n = abcHeight(abc->root);
+                printf("The height of the tree is: %d", n);
+            }break;
+
+
+            case 6:{ //search
+                printf("Key: ");
+                scanf("%d", &k);
+
+                p = abcSearch(abc->root, k);
 
                 if(p)
                     printf("Key found: (%d, %d).", p->key, p->value);
